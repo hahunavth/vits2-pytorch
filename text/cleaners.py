@@ -54,6 +54,41 @@ def expand_abbreviations(text):
     return text
 
 
+# List of (regular expression, replacement) pairs for abbreviations:
+_map_unk_words_vi = [
+    (re.compile("\\b%s\\b" % x[0], re.IGNORECASE), x[1])
+    for x in [
+        ("taxi", "tắc xi"),
+        ("you", "diu"),
+        ("alo", "a lô"),
+        ("boss", "bót"),
+        ("shop", "sốp"),
+        ("centimet", "sen ti mét"),
+        ("atm", "ây ti em"),
+        ("scandal", "sờ can đồ"),
+        ("tivi", "ti vi"),
+        ("oke", "ô kê"),
+        ("toilet", "toi lét"),
+        ("sofa", "sô pha"),
+        ("studio", "sờ tu đi ô"),
+        ("mode", "mốt"),
+        ("venice", "vơ nít"),
+        ("ok", "ô kê"),
+        ("sexy", "sếch xi"),
+        ("honey", "hơ ni"),
+        ("love", "lớp"),
+        ("jean", "din"),
+        ("casting", "cát sờ ting"),
+    ]
+]
+
+
+def expand_unk_words_vi(text):
+    for regex, replacement in _map_unk_words_vi:
+        text = re.sub(regex, replacement, text)
+    return text
+
+
 def expand_numbers(text):
     return normalize_numbers(text)
 
@@ -118,5 +153,24 @@ def english_cleaners3(text):
     text = lowercase(text)
     text = expand_abbreviations(text)
     phonemes = backend.phonemize([text], strip=True)[0]
+    phonemes = collapse_whitespace(phonemes)
+    return phonemes
+
+
+def vietnamese_cleaner2(text):
+    """Modify version of english_cleaner2"""
+    text = lowercase(text)
+    text = text.replace("_", " ")
+    print(text)
+    text = expand_unk_words_vi(text)
+    phonemes = phonemize(
+        text,
+        language="vi",
+        backend="espeak",
+        strip=True,
+        preserve_punctuation=True,
+        with_stress=True,
+        language_switch='remove-utterance',
+    )
     phonemes = collapse_whitespace(phonemes)
     return phonemes
