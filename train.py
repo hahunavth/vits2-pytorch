@@ -95,7 +95,7 @@ def run(rank, n_gpus, hps):
     collate_fn = TextAudioCollate()
     train_loader = DataLoader(
         train_dataset,
-        num_workers=8,
+        num_workers=2,  # only 2 worker on kaggle
         shuffle=False,
         pin_memory=True,
         collate_fn=collate_fn,
@@ -105,7 +105,7 @@ def run(rank, n_gpus, hps):
         eval_dataset = TextAudioLoader(hps.data.validation_files, hps.data)
         eval_loader = DataLoader(
             eval_dataset,
-            num_workers=8,
+            num_workers=2, # only 2 worker on kaggle
             shuffle=False,
             batch_size=hps.train.batch_size,
             pin_memory=True,
@@ -181,7 +181,7 @@ def run(rank, n_gpus, hps):
                 3,
                 0.1,
                 gin_channels=hps.model.gin_channels if hps.data.n_speakers != 0 else 0,
-            ).cuda(rank) 
+            ).cuda(rank)
     else:
         print("NOT using any duration discriminator like VITS1")
         net_dur_disc = None
