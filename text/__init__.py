@@ -19,8 +19,10 @@ def text_to_sequence(text, cleaner_names):
     sequence = []
 
     clean_text = _clean_text(text, cleaner_names)
+    print(clean_text) # note: debug infer
     for symbol in clean_text:
         if symbol in _symbol_to_id.keys():
+            # print(symbol) # note: debug infer
             symbol_id = _symbol_to_id[symbol]
             sequence += [symbol_id]
         else:

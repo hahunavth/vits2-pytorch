@@ -82,7 +82,6 @@ _map_unk_words_vi = [
     ]
 ]
 
-
 def expand_unk_words_vi(text):
     for regex, replacement in _map_unk_words_vi:
         text = re.sub(regex, replacement, text)
@@ -161,7 +160,6 @@ def vietnamese_cleaner2(text):
     """Modify version of english_cleaner2"""
     text = lowercase(text)
     text = text.replace("_", " ")
-    print(text)
     text = expand_unk_words_vi(text)
     phonemes = phonemize(
         text,
@@ -169,7 +167,7 @@ def vietnamese_cleaner2(text):
         backend="espeak",
         strip=True,
         preserve_punctuation=True,
-        with_stress=True,
+        with_stress=False,
         language_switch='remove-utterance',
     )
     phonemes = collapse_whitespace(phonemes)
